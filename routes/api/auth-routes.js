@@ -1,6 +1,6 @@
 const { Router } = require('../../classes')
 const { authController } = require('../../controllers')
-const { User, userSchemas } = require('../../models')
+const { userSchemas } = require('../../models')
 
 class AuthRouter extends Router {
   static controller = authController
@@ -11,7 +11,11 @@ class AuthRouter extends Router {
   }
 
   setupRouter = () => {
-    this.router.post('/register', this.validateBody(AuthRouter.schemas), AuthRouter.controller.register)
+    this.router.post(
+      '/register',
+      this.validateBody(AuthRouter.schemas.userRegisterSchema),
+      AuthRouter.controller.register,
+    )
 
     this.router.post('/login', this.validateBody(AuthRouter.schemas.userLoginSchema), AuthRouter.controller.login)
 

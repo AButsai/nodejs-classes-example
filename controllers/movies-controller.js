@@ -1,5 +1,5 @@
 const { Movie } = require('../models')
-const { Controller } = require('../classes')
+const { Controller, CreateError } = require('../classes')
 
 class MovieController extends Controller {
   getAll = this.ctrlWrapper(async (req, res) => {
@@ -18,11 +18,11 @@ class MovieController extends Controller {
     const result = await this.model.findById(id)
 
     if (!result) {
-      throw this.createError(404, `Movie with id=${id} not found`)
+      throw new CreateError(404, `Movie with id=${id} not found`)
     }
 
     if (result.owner.toString() !== owner.toString()) {
-      throw this.createError(400)
+      throw new CreateError(400)
     }
 
     res.json(result)
@@ -38,7 +38,7 @@ class MovieController extends Controller {
     const { id } = req.params
     const result = await this.model.findByIdAndUpdate(id, req.body, { new: true })
     if (!result) {
-      throw this.createError(404, `Movie with id=${id} not found`)
+      throw new CreateError(404, `Movie with id=${id} not found`)
     }
 
     res.json(result)
@@ -48,7 +48,7 @@ class MovieController extends Controller {
     const { id } = req.params
     const result = await this.model.findByIdAndUpdate(id, req.body, { new: true })
     if (!result) {
-      throw this.createError(404, `Movie with id=${id} not found`)
+      throw new CreateError(404, `Movie with id=${id} not found`)
     }
 
     res.json(result)
@@ -58,7 +58,7 @@ class MovieController extends Controller {
     const { id } = req.params
     const result = await this.model.findByIdAndDelete(id)
     if (!result) {
-      throw this.createError(404, `Movie with id=${id} not found`)
+      throw new CreateError(404, `Movie with id=${id} not found`)
     }
 
     res.json({

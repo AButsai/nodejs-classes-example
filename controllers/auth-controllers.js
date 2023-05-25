@@ -1,4 +1,4 @@
-const { Controller } = require('../classes')
+const { Controller, CreateError } = require('../classes')
 const { User } = require('../models')
 
 class AuthController extends Controller {
@@ -6,7 +6,7 @@ class AuthController extends Controller {
     const { email, password } = req.body
     const user = await this.model.findOne({ email })
     if (user) {
-      throw this.createError(409, 'Email already exist')
+      throw new CreateError(409, 'Email already exist')
     }
     const hashPassword = await this.hashPassword(password)
     const result = await this.model.create({ ...req.body, password: hashPassword })
@@ -20,7 +20,7 @@ class AuthController extends Controller {
     const { email, password } = req.body
     const user = await this.model.findOne({ email })
     if (!user) {
-      throw this.createError(401)
+      throw new CreateError(401)
     }
     await this.passwordCompare(password, user.password)
     const { _id: id } = user
