@@ -1,26 +1,12 @@
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const CreateError = require('./Error')
 
 const { SECRET_KEY } = process.env
 
 class Controller {
-  static messagesList = {
-    400: 'Bad Request',
-    401: 'Unauthorized',
-    403: 'Forbidden',
-    404: 'Not Found',
-    409: 'Conflict',
-  }
-
   constructor(model) {
     this.model = model
-  }
-
-  createError(status, message) {
-    const errorMessage = message || this.messagesList[status]
-    const error = new Error(errorMessage)
-    error.status = status
-    return error
   }
 
   ctrlWrapper(ctrl) {
@@ -42,7 +28,7 @@ class Controller {
   async passwordCompare(password, hashPassword) {
     const passwordCompare = await bcrypt.compare(password, hashPassword)
     if (!passwordCompare) {
-      throw this.createError(401)
+      throw new CreateError(401)
     }
     return passwordCompare
   }
